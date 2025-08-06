@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  java-app:
+    build:
+      context: ./java-app
+    container_name: java-app
+    volumes:
+      - logs:/app/logs
+    environment:
+      - LOG_PATH=/app/logs/app.log
+
+  fluentbit:
+    image: fluent/fluent-bit:latest
+    container_name: fluentbit
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - ./fluent-bit/parsers.conf:/fluent-bit/etc/parsers.conf:ro
+      - logs:/app/logs
+    depends_on:
+      - java-app
+
+volumes:
+  logs:
+
